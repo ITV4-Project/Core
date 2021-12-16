@@ -3,8 +3,8 @@ name: .NET
 on:
   push:
   pull_request:
-    branches: [ master ]
-
+    branches-ignore: [ master ]
+    
 jobs:
   build:
 
