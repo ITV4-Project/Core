@@ -8,9 +8,9 @@ jobs:
     name: Build, pack & publish
     runs-on: ubuntu-latest
     steps:
-    
-      # Verify Build Status
       - uses: actions/checkout@v2
+      
+      # Verify Build Status
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
@@ -19,46 +19,14 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore
-      - name: Test
+      - name: Run Tests
         run: dotnet test --no-build --verbosity normal
+
+      # Pack
+      - name: Pack
+        run: dotnet pack Core.csproj --no-build --version-suffix $(git rev-parse --short "$GITHUB_SHA")
       
-      # Get Version
-      - uses: dotnet/nbgv@v0.4.0
-        with:
-          setAllVars: true
-      - run: echo "Version $NBGV_NuGetPackageVersion"
-
       # Publish
-      - name: publish on version change
-        id: publish_nuget
-        uses: rohith/publish-nuget@v2
-        with:
-          # Filepath of the project to be packaged, relative to root of repository
-          PROJECT_FILE_PATH: Core/Core.csproj
+      - name: Publish NuGet
+        run: dotnet nuget push Core.csproj --api-key ${{ secrets.NUGET_TOKEN_PRUSIAS }} --source https://api.nuget.org/v3/index.json
 
-          # NuGet package id, used for version detection & defaults to project name
-          PACKAGE_NAME: ITV4-Project_Core
-
-          # Filepath with version info, relative to root of repository & defaults to PROJECT_FILE_PATH
-          # VERSION_FILE_PATH: Directory.Build.props
-
-          # Regex pattern to extract version info in a capturing group
-          # VERSION_REGEX: ^\s*<Version>(.*)<\/Version>\s*$
-
-          # Useful with external providers like Nerdbank.GitVersioning, ignores VERSION_FILE_PATH & VERSION_REGEX
-          VERSION_STATIC: $NBGV_NuGetPackageVersion
-
-          # Flag to toggle git tagging, enabled by default
-          TAG_COMMIT: true
-
-          # Format of the git tag, [*] gets replaced with actual version
-          TAG_FORMAT: v*
-
-          # API key to authenticate with NuGet server
-          NUGET_KEY: ${{secrets.NUGET_TOKEN_PRUSIAS}}
-
-          # NuGet server uri hosting the packages, defaults to https://api.nuget.org
-          NUGET_SOURCE: https://api.nuget.org
-
-          # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
-          # INCLUDE_SYMBOLS: false
