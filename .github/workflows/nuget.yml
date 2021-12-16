@@ -1,20 +1,30 @@
-name: publish to nuget
+name: Build & Publish
 on:
   push:
     branches:
       - master # Default release branch
-      
 jobs:
   publish:
-    name: build, pack & publish
+    name: Build, pack & publish
     runs-on: ubuntu-latest
     steps:
+    
+      # Verify Build Status
       - uses: actions/checkout@v2
-
-      # - name: Setup dotnet
-      #   uses: actions/setup-dotnet@v1
-      #   with:
-      #     dotnet-version: 3.1.200
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+      
+      # Get Version
+      - uses: dotnet/nbgv@v0.4.0
+      - run: echo "Version $NGBV_NuGetPackageVersion"
 
       # Publish
       - name: publish on version change
@@ -23,24 +33,24 @@ jobs:
         with:
           # Filepath of the project to be packaged, relative to root of repository
           PROJECT_FILE_PATH: Core/Core.csproj
-          
+
           # NuGet package id, used for version detection & defaults to project name
           # PACKAGE_NAME: Core
-          
+
           # Filepath with version info, relative to root of repository & defaults to PROJECT_FILE_PATH
           # VERSION_FILE_PATH: Directory.Build.props
 
           # Regex pattern to extract version info in a capturing group
           # VERSION_REGEX: ^\s*<Version>(.*)<\/Version>\s*$
-          
+
           # Useful with external providers like Nerdbank.GitVersioning, ignores VERSION_FILE_PATH & VERSION_REGEX
-          # VERSION_STATIC: 1.0.0
+          VERSION_STATIC: $NGBV_NuGetPackageVersion
 
           # Flag to toggle git tagging, enabled by default
-          # TAG_COMMIT: true
+          TAG_COMMIT: true
 
           # Format of the git tag, [*] gets replaced with actual version
-          # TAG_FORMAT: v*
+          TAG_FORMAT: v*
 
           # API key to authenticate with NuGet server
           NUGET_KEY: ${{secrets.NUGET_TOKEN_PRUSIAS}}
