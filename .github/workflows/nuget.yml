@@ -16,14 +16,17 @@ jobs:
     env:
       BUILD_CONFIG: 'Release'
       SOLUTION: 'Core.sln'
+      BUILD_VERSION: 'v0.0.${{ github.run_number }}'
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
     
+    
     - name: Get Build Version
-      run: echo 'BUILD_VERSION=v0.0.${{ github.run_number }}'
+      run: echo $BUILD_VERSION
+      
 
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.0.5
