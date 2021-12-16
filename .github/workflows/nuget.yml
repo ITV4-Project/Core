@@ -16,7 +16,7 @@ jobs:
     env:
       BUILD_CONFIG: 'Release'
       SOLUTION: 'Core.sln'
-      BUILD_VERSION: 'v0.0.${{ github.run_number }}'
+      BUILD_VERSION: '0.0.${{ github.run_number }}'
 
     runs-on: ubuntu-latest
 
