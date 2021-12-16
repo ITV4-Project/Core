@@ -21,7 +21,7 @@ jobs:
     steps:
     - name: Github REST API Call
       env:
-        CI_TOKEN: ${{ secrets.CI_TOKEN }}
+        CI_TOKEN: ${{ secrets.PRUSIAS_CI_PAT }}
         PARENT_REPO: ITV4-Project/Node
         PARENT_BRANCH: master
         WORKFLOW_ID: 16366641
