@@ -1,32 +1,53 @@
-name: Build & Publish
+name: Nuget CI
+
 on:
+  create:
+    branches: 
+      - release/**
   push:
     branches:
-      - master # Default release branch
+    - master
+  pull_request:
+    branches:
+    - master
+    
 jobs:
-  publish:
-    name: Build, pack & publish
+  build:
+
+    env:
+      BUILD_CONFIG: 'Release'
+      SOLUTION: 'Core.sln'
+
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      
-      # Verify Build Status
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 6.0.x
-      - name: Restore dependencies
-        run: dotnet restore
-      - name: Build
-        run: dotnet build --no-restore
-      - name: Run Tests
-        run: dotnet test --no-build --verbosity normal
+    - uses: actions/checkout@v2
+    
+    - name: Get Build Version
+      run: |
+        Import-Module .\build\GetBuildVersion.psm1
+        Write-Host $Env:GITHUB_REF
+        $version = GetBuildVersion -VersionString $Env:GITHUB_REF
+        echo "BUILD_VERSION=$version" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+      shell: pwsh
 
-      # Pack
-      - name: Pack
-        run: dotnet pack Core.csproj --no-build --version-suffix $(git rev-parse --short "$GITHUB_SHA")
-      
-      # Publish
-      - name: Publish NuGet
-        run: dotnet nuget push Core.csproj --api-key ${{ secrets.NUGET_TOKEN_PRUSIAS }} --source https://api.nuget.org/v3/index.json
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
 
+    - name: Restore dependencies
+      run: nuget restore $SOLUTION
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Build
+      run: dotnet build $SOLUTION --configuration $BUILD_CONFIG -p:Version=$BUILD_VERSION --no-restore
+
+    - name: Run tests
+      run: dotnet test /p:Configuration=$env:BUILD_CONFIG --no-restore --no-build --verbosity normal
+      
+    - name: Publish
+      if: startsWith(github.ref, 'refs/heads/release')
+      run: nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_TOKEN_PRUSIAS}}
