@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using System.Security.Cryptography;
 
 namespace Core
@@ -32,7 +28,7 @@ namespace Core
         /// </summary>
         /// <param name="exisitingKey">Existing key as hexidecimal string</param>
         /// <param name="isPrivateKey">Is the key private or public</param>
-        public ECDsaKey(String exisitingKey, bool isPrivateKey = false) : this(Convert.FromHexString(exisitingKey), isPrivateKey) { }
+        public ECDsaKey(string exisitingKey, bool isPrivateKey = false) : this(Convert.FromHexString(exisitingKey), isPrivateKey) { }
 
         /// <summary>
         /// Create a ECDsaKey based on exisiting public or private key
@@ -56,8 +52,8 @@ namespace Core
 
                 parameters.Q = new ECPoint
                 {
-                    X = exisitingKey.Skip(1).Take(16).ToArray(),
-                    Y = exisitingKey.Skip(17).ToArray()
+                    X = exisitingKey.Skip(1).Take(32).ToArray(),
+                    Y = exisitingKey.Skip(33).ToArray()
                 };
 
                 key = ECDsa.Create(parameters);
@@ -127,7 +123,7 @@ namespace Core
         /// </summary>
         /// <param name="data">The string to sign</param>
         /// <returns>The signature of the string</returns>
-        public string Sign(String data)
+        public string Sign(string data)
         {
             byte[] dataBytes = Encoding.Unicode.GetBytes(data);
             byte[] signature = key.SignData(dataBytes, HashAlgorithmName.SHA256);
@@ -151,7 +147,7 @@ namespace Core
         /// <param name="data">The string to verify</param>
         /// <param name="signature">The signature to verify as a string</param>
         /// <returns>True if genuine</returns>
-        public bool Verify(String data, string signature)
+        public bool Verify(string data, string signature)
         {
             byte[] dataBytes = Encoding.Unicode.GetBytes(data);
             byte[] signatureByteArray = Convert.FromBase64String(signature);

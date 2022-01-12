@@ -1,0 +1,52 @@
+name: Nuget CI
+
+#https://www.jamescroft.co.uk/how-to-build-publish-nuget-packages-with-github-actions/
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+    
+jobs:
+  build:
+
+    env:
+      SOLUTION: 'Core.sln'
+      NUGET_NAME: 'ITV4-Project_Core'
+      BUILD_VERSION: '0.0.${{ github.run_number }}'
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    
+    - name: Get Build Version
+      run: echo $BUILD_VERSION
+      
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
+
+    - name: Restore dependencies
+      run: nuget restore $SOLUTION
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Build
+      run: dotnet build $SOLUTION -p:Version=$BUILD_VERSION --no-restore
+
+    - name: Run tests
+      run: dotnet test --no-restore --no-build --verbosity normal
+      
+    - name: Pack
+      run: dotnet pack $SOLUTION -p:Version=$BUILD_VERSION -p:PackageID=$NUGET_NAME --no-restore  
+      
+    - name: Publish
+      run: nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_TOKEN_PRUSIAS}}
