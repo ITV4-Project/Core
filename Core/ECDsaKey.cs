@@ -97,7 +97,7 @@ namespace Core
             if (x == null || y == null) {
                 throw new NullReferenceException("ECDsaKey has no public key");
             }
-            return Utility.ConcatArrays(x, y);
+            return Utility.ConcatArrays(prefix, x, y);
         }
 
         /// <summary>
