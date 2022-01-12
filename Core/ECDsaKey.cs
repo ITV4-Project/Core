@@ -65,27 +65,35 @@ namespace Core
         }
 
         /// <summary>
-        /// Get private key as string
+        /// Get private key
         /// </summary>
-        /// <returns>The private key as a hexadecimal string</returns>
-        public string GetPrivateKey()
-        {
+        /// <returns>The private key
+        public byte[] GetPrivateKey() {
             if (key == null) {
                 throw new NullReferenceException("ECDsaKey has not been initialized");
-			}
+            }
             ECParameters p = key.ExportParameters(true);
             var privateKey = p.D;
             if (privateKey == null) {
                 throw new NullReferenceException("ECDsaKey has no private key");
             }
-            return Convert.ToHexString(privateKey);
+            return privateKey;
         }
 
         /// <summary>
-        /// Get public key as string
+        /// Get private key as string
         /// </summary>
-        /// <returns>The public key as a hexadecimal string</returns>
-        public string GetPublicKey() {
+        /// <returns>The private key as a hexadecimal string</returns>
+        public string GetPrivateKeyAsString()
+        {
+            return Convert.ToHexString(GetPrivateKey());
+        }
+
+        /// <summary>
+        /// Get public key
+        /// </summary>
+        /// <returns>The public key
+        public byte[] GetPublicKey() {
             ECParameters p = key.ExportParameters(false);
             byte[] prefix = { 0x04 };
             byte[]? x = p.Q.X;
@@ -93,8 +101,15 @@ namespace Core
             if (x == null || y == null) {
                 throw new NullReferenceException("ECDsaKey has no public key");
             }
-            byte[] publicKey = prefix.Concat(x).Concat(y).ToArray();
-            return Convert.ToHexString(publicKey);
+            return Utility.ConcatArrays(x, y);
+        }
+
+        /// <summary>
+        /// Get public key as string
+        /// </summary>
+        /// <returns>The public key as a hexadecimal string</returns>
+        public string GetPublicKeyAsString() {
+            return Convert.ToHexString(GetPublicKey());
         }
 
         /// <summary>
@@ -142,5 +157,14 @@ namespace Core
             byte[] signatureByteArray = Convert.FromBase64String(signature);
             return Verify(dataBytes, signatureByteArray);
         }
+
+        /// <summary>
+        /// Get an ECDsaKEY from an exisiting publickey
+        /// </summary>
+        /// <param name="publicKey"></param>
+        /// <returns>ECDsaKEY of the given publicKey</returns>
+        public static ECDsaKey FromPublicKey(byte[] publicKey) {
+            return new ECDsaKey(publicKey, false);
+		}
     }
 }
