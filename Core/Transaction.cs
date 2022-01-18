@@ -149,6 +149,14 @@ namespace Core {
             return byteArrayCache;
         }
 
+        public byte[] GetByteArray() {
+            if (Signature == null) {
+                return Array.Empty<byte>(); 
+            } else {
+                return Utility.ConcatArrays(GetSignatureByteArray(), Signature);
+            }
+        }
+
         /// <summary>
         /// Sign the Transaction
         /// </summary>
