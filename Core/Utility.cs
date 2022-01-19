@@ -15,5 +15,29 @@ namespace Core {
             }
             return result;
         }
+
+        public static void SaveECDsaKey(ECDsaKey key, string? path = null, string? filename = null) {
+            if (path == null) {
+                path = Environment.CurrentDirectory;
+            }
+            if (filename == null) {
+                filename = "ecdsa.key";
+            }
+            string fullpath = Path.Combine(path, filename);
+            File.WriteAllText(fullpath, key.GetPrivateKeyAsString());
+		}
+
+        public static ECDsaKey LoadECDsaKey(string? path = null, string? filename = null) {
+            if (path == null) {
+                path = Environment.CurrentDirectory;
+            }
+            if (filename == null) {
+                filename = "ecdsa.key";
+            }
+            string fullpath = Path.Combine(path, filename);
+            string input = File.ReadAllText(fullpath);
+
+            return ECDsaKey.FromPrivateKey(input);
+        }
     }
 }
