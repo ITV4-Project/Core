@@ -9,12 +9,14 @@ namespace Core {
 
         public const int CURRENT_VERSION = 1;
 
-        /// <summary>
-        /// Empty Contructor
-        /// </summary>
-        public Transaction() {
-
-		}
+		/// <summary>
+		/// Empty Contructor
+		/// </summary>
+		internal Transaction() {
+            MerkleHash = Array.Empty<byte>();
+            Input = Array.Empty<byte>();
+            Output = Array.Empty<byte>();
+        }
 
         /// <summary>
         /// Constructor
@@ -193,17 +195,8 @@ namespace Core {
         /// </summary>
         /// <returns>True if the transaction signature is valid, false otherwise</returns>
         public bool VerifySignature() {
-            return VerifySignature(ECDsaKey.FromPublicKey(Input));
-        }
-
-        /// <summary>
-        /// Verify the validity of the signature
-        /// </summary>
-        /// <param name="key">The key used to verify the Transaction</param>
-        /// <returns>True if the transaction signature is valid, false otherwise</returns>
-        public bool VerifySignature(ECDsaKey key) {
             if (Signature != null) {
-                return key.Verify(GetSignatureByteArray(), Signature);
+                return ECDsaKey.FromPublicKey(Input).Verify(GetSignatureByteArray(), Signature);
             }
             return false;
         }

@@ -9,7 +9,14 @@ namespace Core {
 
         public const int CURRENT_VERSION = 1;
 
-        public Block() { }
+		/// <summary>
+		/// Empty Contructor
+		/// </summary>
+		public Block() {
+            MerkleHash = Array.Empty<byte>();
+            Transactions = new List<Transaction>();
+            Verifier = Array.Empty<byte>();
+        }
 
         /// <summary>
         /// Block Constructor
@@ -113,7 +120,7 @@ namespace Core {
                 byte[] transactionCountByteArray = BitConverter.GetBytes(TransactionCount);
 
                 foreach (Transaction transaction in Transactions) {
-                    Utility.ConcatArrays(transaction.GetByteArray());
+                    transactionByteArray = Utility.ConcatArrays(transactionByteArray, transaction.GetByteArray());
                 }
 
                 if (!BitConverter.IsLittleEndian) {
@@ -146,17 +153,8 @@ namespace Core {
         /// </summary>
         /// <returns>True if the block signature is valid, false otherwise</returns>
         public bool VerifySignature() {
-            return VerifySignature(ECDsaKey.FromPublicKey(Verifier));
-        }
-
-        /// <summary>
-        /// Verify the validity of the signature
-        /// </summary>
-        /// <param name="key">The key used to verify the Block</param>
-        /// <returns>True if the block signature is valid, false otherwise</returns>
-        public bool VerifySignature(ECDsaKey key) {
             if (Signature != null) {
-                return key.Verify(GetSignatureByteArray(), Signature);
+                return ECDsaKey.FromPublicKey(Verifier).Verify(GetSignatureByteArray(), Signature);
             }
             return false;
         }
