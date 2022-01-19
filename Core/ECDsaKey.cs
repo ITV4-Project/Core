@@ -23,19 +23,13 @@ namespace Core
         {
             key = ECDsa.Create(parameters);
         }
-        /// <summary>
-        /// Create a ECDsaKey based on exisiting public or private key
-        /// </summary>
-        /// <param name="exisitingKey">Existing key as hexidecimal string</param>
-        /// <param name="isPrivateKey">Is the key private or public</param>
-        public ECDsaKey(string exisitingKey, bool isPrivateKey = false) : this(Convert.FromHexString(exisitingKey), isPrivateKey) { }
 
         /// <summary>
         /// Create a ECDsaKey based on exisiting public or private key
         /// </summary>
         /// <param name="exisitingKey">Existing key</param>
         /// <param name="isPrivateKey">Is the key private or public</param>
-        public ECDsaKey(byte[] exisitingKey, bool isPrivateKey)
+        internal ECDsaKey(byte[] exisitingKey, bool isPrivateKey)
         {
             if (isPrivateKey)
             {
@@ -82,7 +76,7 @@ namespace Core
         /// <returns>The private key as a hexadecimal string</returns>
         public string GetPrivateKeyAsString()
         {
-            return Convert.ToHexString(GetPrivateKey());
+            return Convert.ToBase64String(GetPrivateKey());
         }
 
         /// <summary>
@@ -155,12 +149,39 @@ namespace Core
         }
 
         /// <summary>
-        /// Get an ECDsaKEY from an exisiting publickey
+        /// Get an ECDsaKey from an exisiting public key
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns>ECDsaKey of the given key</returns>
+        public static ECDsaKey FromPublicKey(string key) {
+            return FromPublicKey(Convert.FromHexString(key));
+        }
+
+        /// <summary>
+        /// Get an ECDsaKEY from an exisiting public key
         /// </summary>
         /// <param name="publicKey"></param>
         /// <returns>ECDsaKEY of the given publicKey</returns>
-        public static ECDsaKey FromPublicKey(byte[] publicKey) {
-            return new ECDsaKey(publicKey, false);
+        public static ECDsaKey FromPublicKey(byte[] key) {
+            return new ECDsaKey(key, false);
 		}
+
+        /// <summary>
+        /// Get an ECDsaKey from an exisiting public key
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns>ECDsaKey of the given key</returns>
+        public static ECDsaKey FromPrivateKey(string key) {
+            return FromPrivateKey(Convert.FromBase64String(key));
+        }
+
+        /// <summary>
+        /// Get an ECDsaKey from an exisiting public key
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns>ECDsaKey of the given key</returns>
+        public static ECDsaKey FromPrivateKey(byte[] key) {
+            return new ECDsaKey(key, true);
+        }
     }
 }
