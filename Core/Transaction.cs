@@ -10,6 +10,13 @@ namespace Core {
         public const int CURRENT_VERSION = 1;
 
         /// <summary>
+        /// Empty Contructor
+        /// </summary>
+        public Transaction() {
+
+		}
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="merkleHash">Signature/Hash of the previous transaction</param>
@@ -149,6 +156,10 @@ namespace Core {
             return byteArrayCache;
         }
 
+        /// <summary>
+        /// Convert all data and the signature in the Transaction to a ByteArray. This should be Unique for each transaction
+        /// </summary>
+        /// <returns>a ByteArray based on the data and the signature in the transaction</returns>
         public byte[] GetByteArray() {
             if (Signature == null) {
                 return Array.Empty<byte>(); 
