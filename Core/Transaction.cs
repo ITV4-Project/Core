@@ -122,7 +122,7 @@ namespace Core {
         /// <summary>
         /// The amount to be send in the Transaction
         /// </summary>
-        public int Amount { get; init; }
+        public long Amount { get; init; }
         /// <summary>
         /// If the Transaction is delegating
         /// </summary>
@@ -187,7 +187,7 @@ namespace Core {
         /// <exception cref="ArgumentOutOfRangeException">If the byte array is invalid</exception>
 		public static Transaction FromByteArray(byte[] bytes) {
             int bytesLength = bytes.Length;
-            int remainingLength = bytes.Length - 145; // 145 is the amount of bytes already taken
+            int remainingLength = bytes.Length - 149; // 149 is the amount of bytes already taken
             int inputOutputLength = (remainingLength / 2);
 
             if ((remainingLength % 2) > 0) {
@@ -199,7 +199,7 @@ namespace Core {
 			byte[] merkleHash = new byte[64];
             byte[] input = new byte[inputOutputLength];
             byte[] output = new byte[inputOutputLength];
-            byte[] amountByteArray = new byte[4];
+            byte[] amountByteArray = new byte[8];
 			byte delegateByte = 0;
             byte[] signature = new byte[64];
 
@@ -210,7 +210,7 @@ namespace Core {
             Array.Copy(bytes, 76, input, 0, inputOutputLength);
             Array.Copy(bytes, 76 + inputOutputLength, output, 0, inputOutputLength);
             
-            Array.Copy(bytes, bytesLength - 69, amountByteArray, 0, 4);
+            Array.Copy(bytes, bytesLength - 73, amountByteArray, 0, 8);
             delegateByte = bytes[bytesLength - 65];
             Array.Copy(bytes, bytesLength - 64, signature, 0, 64);
 
@@ -220,7 +220,7 @@ namespace Core {
                 MerkleHash = merkleHash,
                 Input = input,
                 Output = output,
-                Amount = BitConverter.ToInt32(amountByteArray),
+                Amount = BitConverter.ToInt64(amountByteArray),
                 IsDelegating = Convert.ToBoolean(delegateByte),
                 Signature = signature
 			};
@@ -244,6 +244,10 @@ namespace Core {
                     Signature = possibleSignatureBytes;
                 }
             }
+        }
+
+        internal void SignGenesis(ECDsaKey key) {
+            Signature = key.Sign(GetSignatureByteArray());
         }
 
         /// <summary>
