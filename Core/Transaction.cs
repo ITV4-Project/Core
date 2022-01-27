@@ -12,7 +12,7 @@ namespace Core {
 		/// <summary>
 		/// Empty Contructor
 		/// </summary>
-		internal Transaction() {
+		public Transaction() {
             MerkleHash = Array.Empty<byte>();
             Input = Array.Empty<byte>();
             Output = Array.Empty<byte>();
