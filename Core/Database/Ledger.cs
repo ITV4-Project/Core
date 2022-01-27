@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Core.Ledger.Exceptions;
+using Core.Database.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Database {

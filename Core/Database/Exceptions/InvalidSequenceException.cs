@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Ledger.Exceptions {
+namespace Core.Database.Exceptions {
 	public class InvalidSequenceException : Exception {
 		public InvalidSequenceException() { }
 

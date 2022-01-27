@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Ledger.Exceptions {
+namespace Core.Database.Exceptions {
 	public class NotFoundException : Exception {
 		public NotFoundException() { }
 		public NotFoundException(string message) : base(message) { }

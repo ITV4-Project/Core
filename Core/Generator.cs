@@ -43,7 +43,7 @@ namespace Core {
                 transactions.Add(CreateRandomTransaction());
 			}
 
-            Block lastBlock = ledger.GetLastBlock();
+            Block lastBlock = ledger.GetLatestBlock();
             if (lastBlock.Signature == null) {
                 throw new Exception("Last confirmed block must have a signature");
 			}
@@ -65,7 +65,7 @@ namespace Core {
                 transactions.Add(CreateDistributionTransaction(key, amount));
 			}
 
-            Block lastBlock = ledger.GetLastBlock();
+            Block lastBlock = ledger.GetLatestBlock();
             if (lastBlock.Signature == null) {
                 throw new Exception("Last confirmed block must have a signature");
             }
@@ -90,7 +90,7 @@ namespace Core {
             }
 
             byte[] merkleHash;
-            Block lastBlock = ledger.GetLastBlock();
+            Block lastBlock = ledger.GetLatestBlock();
             if (lastBlock.Signature != null) {
                 merkleHash = lastBlock.Signature;
             } else {
