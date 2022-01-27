@@ -7,9 +7,7 @@ namespace TestCore {
 	public class TestTransaction {
 		private ECDsaKey inputKey = new();
 		private ECDsaKey outputKey = new();
-		private static byte[] baseMerkleHash = Convert.FromHexString(
-			"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-		);
+		private static byte[] baseMerkleHash = Utility.GetEmptyByteArray(64);
 
 		[TestInitialize()]
 		public void Init() {

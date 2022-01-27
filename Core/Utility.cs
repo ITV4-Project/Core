@@ -40,27 +40,14 @@ namespace Core {
             return ECDsaKey.FromPrivateKey(input);
         }
 
-        public Block GetGenesisBlock(ECDsaKey key) {
-            Transaction t = new Transaction() { 
-                MerkleHash = Convert.FromHexString("0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
-                Amount = 100000 * 10 ^ 8,
-                Input = Convert.FromHexString("0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
-                Output = key.GetPublicKey(),
-                IsDelegating = false
-            };
-            t.Sign(key);
+        public static byte[] GetEmptyByteArray(int length) {
+            byte[] array = new byte[length];
 
+			for (int i = 0; i < length; i++) {
+                array[i] = 0;
+			}
 
-            Block b = new Block() {
-                MerkleHash = Convert.FromHexString("0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
-                TransactionCount = 1,
-                Transactions = new List<Transaction>() {
-                    t
-                },
-                Verifier = key.GetPublicKey()
-            };
-            b.Sign(key);
-            return b;
-        }
+            return array;
+		}
     }
 }
