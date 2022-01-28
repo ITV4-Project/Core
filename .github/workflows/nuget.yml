@@ -13,7 +13,7 @@ jobs:
     env:
       SOLUTION: 'Core.sln'
       NUGET_NAME: 'ITV4-Project_Core'
-      BUILD_VERSION: '0.1.${{ github.run_number }}'
+      BUILD_VERSION: '0.0.${{ github.run_number }}'
 
     runs-on: ubuntu-latest
 
@@ -46,4 +46,5 @@ jobs:
       run: dotnet pack $SOLUTION -p:Version=$BUILD_VERSION -p:PackageID=$NUGET_NAME --no-restore  
       
     - name: Publish
-      run: nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_TOKEN_PRUSIAS}}
+      run: dotnet nuget push '/home/runner/work/Core/Core/Core/bin/Debug/ITV4-Project_Core.$BUILD_VERSION.nupkg' --source 'https://api.nuget.org/v3/index.json' --api-key ${{secrets.NUGET_TOKEN_PRUSIAS}}
+
