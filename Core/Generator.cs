@@ -1,4 +1,5 @@
 ﻿using Core.Database;
+using Core.Database.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,13 +90,13 @@ namespace Core {
                 outputKey = GetRandomKey();
             }
 
-            byte[] merkleHash;
-            Block lastBlock = ledger.GetLatestBlock();
-            if (lastBlock.Signature != null) {
-                merkleHash = lastBlock.Signature;
-            } else {
+            byte[] merkleHash = Array.Empty<byte>();
+            try {
+                Block lastBlock = ledger.GetLatestBlock();
+                if (lastBlock.Signature != null) merkleHash = lastBlock.Signature;
+            } catch (NotFoundException) {
                 merkleHash = Utility.GetEmptyByteArray(64);
-			}
+            }
 
             Transaction t = new Transaction() {
                 MerkleHash = merkleHash,
@@ -112,15 +113,15 @@ namespace Core {
 		}
 
         public Transaction CreateDistributionTransaction(ECDsaKey output, int amount) {
-            byte[] merkleHash;
+            byte[] merkleHash = Array.Empty<byte>();
 
             if (lastSignatureDictionary.ContainsKey(genesisKey)) {
                 merkleHash = lastSignatureDictionary[genesisKey];
             } else {
-                Transaction lastTransaction = ledger.GetLastTransaction(genesisKey);
-                if (lastTransaction.Signature != null) {
-                    merkleHash = lastTransaction.Signature;
-                } else {
+                try {
+                    Transaction lastTransaction = ledger.GetLastTransaction(genesisKey);
+                    if (lastTransaction.Signature != null) merkleHash = lastTransaction.Signature;
+                } catch (NotFoundException) {
                     merkleHash = Utility.GetEmptyByteArray(64);
                 }
             }
