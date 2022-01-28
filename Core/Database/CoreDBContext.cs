@@ -11,12 +11,12 @@ namespace Core.Database {
 
 		public readonly string DbPath;
 
-		public DbSet<Transaction>? Transactions { get; set; }
-		public DbSet<Block>? Blocks { get; set; }
+        public DbSet<Transaction> Transactions => Set<Transaction>();
+		public DbSet<Block> Blocks => Set<Block>();
 
 		public CoreDbContext() : this(GetLocalAppDataDatabase()) { }
 
-		public CoreDbContext(string dbPath) {
+		public CoreDbContext(string dbPath) : base() {
 			this.DbPath = dbPath;
 
 			Database.EnsureCreated();

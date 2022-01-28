@@ -1,4 +1,5 @@
 ﻿using Core.Database;
+using Core.Database.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +44,7 @@ namespace Core {
                 transactions.Add(CreateRandomTransaction());
 			}
 
-            Block lastBlock = ledger.GetLastBlock();
+            Block lastBlock = ledger.GetLatestBlock();
             if (lastBlock.Signature == null) {
                 throw new Exception("Last confirmed block must have a signature");
 			}
@@ -65,7 +66,7 @@ namespace Core {
                 transactions.Add(CreateDistributionTransaction(key, amount));
 			}
 
-            Block lastBlock = ledger.GetLastBlock();
+            Block lastBlock = ledger.GetLatestBlock();
             if (lastBlock.Signature == null) {
                 throw new Exception("Last confirmed block must have a signature");
             }
@@ -89,13 +90,13 @@ namespace Core {
                 outputKey = GetRandomKey();
             }
 
-            byte[] merkleHash;
-            Block lastBlock = ledger.GetLastBlock();
-            if (lastBlock.Signature != null) {
-                merkleHash = lastBlock.Signature;
-            } else {
+            byte[] merkleHash = Array.Empty<byte>();
+            try {
+                Block lastBlock = ledger.GetLatestBlock();
+                if (lastBlock.Signature != null) merkleHash = lastBlock.Signature;
+            } catch (NotFoundException) {
                 merkleHash = Utility.GetEmptyByteArray(64);
-			}
+            }
 
             Transaction t = new Transaction() {
                 MerkleHash = merkleHash,
@@ -112,15 +113,15 @@ namespace Core {
 		}
 
         public Transaction CreateDistributionTransaction(ECDsaKey output, long amount) {
-            byte[] merkleHash;
+            byte[] merkleHash = Array.Empty<byte>();
 
             if (lastSignatureDictionary.ContainsKey(genesisKey)) {
                 merkleHash = lastSignatureDictionary[genesisKey];
             } else {
-                Transaction lastTransaction = ledger.GetLastTransaction(genesisKey);
-                if (lastTransaction.Signature != null) {
-                    merkleHash = lastTransaction.Signature;
-                } else {
+                try {
+                    Transaction lastTransaction = ledger.GetLastTransaction(genesisKey);
+                    if (lastTransaction.Signature != null) merkleHash = lastTransaction.Signature;
+                } catch (NotFoundException) {
                     merkleHash = Utility.GetEmptyByteArray(64);
                 }
             }

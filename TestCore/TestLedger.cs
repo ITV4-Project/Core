@@ -23,7 +23,7 @@ namespace TestCore {
 			Console.WriteLine("Created genesis block");
 			Console.WriteLine("Genesis balance: {0}", ledger.GetBalance(generator.GetGenesisKey()));
 
-			ledger.SaveBlock(generator.CreateDistributionBlock(1000));
+			ledger.SaveNewBlock(generator.CreateDistributionBlock(1000));
 
 			Console.WriteLine("Distributed funds");
 			foreach (ECDsaKey key in generator.GetKeys()) {
@@ -32,7 +32,7 @@ namespace TestCore {
 			Console.WriteLine("Genesis balance: {0}", ledger.GetBalance(generator.GetGenesisKey()));
 
 			
-			ledger.SaveBlock(generator.CreateRandomBlock());
+			ledger.SaveNewBlock(generator.CreateRandomBlock());
 
 			Console.WriteLine("Generated random transactions");
 			foreach (ECDsaKey key in generator.GetKeys()) {
