@@ -27,7 +27,7 @@ namespace Core {
         /// <param name="amount">The amount to send in the transaction</param>
         /// <param name="isDelegating">If the transaction is also delegating input</param>
         /// <param name="signature">The signature/hash of the transaction</param>
-        public Transaction(byte[] merkleHash, byte[] input, byte[] output, int amount, bool isDelegating, byte[]? signature = null) :
+        public Transaction(byte[] merkleHash, byte[] input, byte[] output, long amount, bool isDelegating, byte[]? signature = null) :
            this(DateTimeOffset.Now, merkleHash, input, output, amount, isDelegating, signature) { }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Core {
         /// <param name="amount">The amount to send in the transaction</param>
         /// <param name="isDelegating">If the transaction is also delegating input</param>
         /// <param name="signature">The signature/hash of the transaction</param>
-        public Transaction(DateTimeOffset creationTime, byte[] merkleHash, byte[] input, byte[] output, int amount, bool isDelegating, byte[]? signature = null) :
+        public Transaction(DateTimeOffset creationTime, byte[] merkleHash, byte[] input, byte[] output, long amount, bool isDelegating, byte[]? signature = null) :
            this(CURRENT_VERSION, creationTime, merkleHash, input, output, amount, isDelegating, signature) { }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Core {
         /// <param name="amount">The amount to send in the transaction</param>
         /// <param name="isDelegating">If the transaction is also delegating input</param>
         /// <param name="signature">The signature/hash of the transaction</param>
-        public Transaction(Guid id, DateTimeOffset creationTime, byte[] merkleHash, byte[] input, byte[] output, int amount, bool isDelegating, byte[]? signature = null) :
+        public Transaction(Guid id, DateTimeOffset creationTime, byte[] merkleHash, byte[] input, byte[] output, long amount, bool isDelegating, byte[]? signature = null) :
             this(id, CURRENT_VERSION, creationTime, merkleHash, input, output, amount, isDelegating, signature) { }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Core {
         /// <param name="amount">The amount to send in the transaction</param>
         /// <param name="isDelegating">If the transaction is also delegating input</param>
         /// <param name="signature">The signature/hash of the transaction</param>
-        public Transaction(int version, DateTimeOffset creationTime, byte[] merkleHash, byte[] input, byte[] output, int amount, bool isDelegating, byte[]? signature = null) :
+        public Transaction(int version, DateTimeOffset creationTime, byte[] merkleHash, byte[] input, byte[] output, long amount, bool isDelegating, byte[]? signature = null) :
             this(new Guid(), version, creationTime, merkleHash, input, output, amount, isDelegating, signature) {}
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Core {
         /// <param name="amount">The amount to send in the transaction</param>
         /// <param name="isDelegating">If the transaction is also delegating input</param>
         /// <param name="signature">The signature/hash of the transaction</param>
-        public Transaction(Guid id, int version, DateTimeOffset creationTime, byte[] merkleHash, byte[] input, byte[] output, int amount, bool isDelegating, byte[]? signature = null) {
+        public Transaction(Guid id, int version, DateTimeOffset creationTime, byte[] merkleHash, byte[] input, byte[] output, long amount, bool isDelegating, byte[]? signature = null) {
             Id = id;
             Version = version;
             CreationTime = creationTime;

@@ -60,7 +60,7 @@ namespace Core {
             return b;
         }
 
-        public Block CreateDistributionBlock(int amount) {
+        public Block CreateDistributionBlock(long amount) {
             List<Transaction> transactions = new List<Transaction>();
             foreach(ECDsaKey key in keys) {
                 transactions.Add(CreateDistributionTransaction(key, amount));
@@ -112,7 +112,7 @@ namespace Core {
             return t;
 		}
 
-        public Transaction CreateDistributionTransaction(ECDsaKey output, int amount) {
+        public Transaction CreateDistributionTransaction(ECDsaKey output, long amount) {
             byte[] merkleHash = Array.Empty<byte>();
 
             if (lastSignatureDictionary.ContainsKey(genesisKey)) {
