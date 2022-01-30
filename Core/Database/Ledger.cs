@@ -7,7 +7,7 @@ using Core.Database.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Database {
-	public class Ledger {
+	public class Ledger : ILedger {
 
 		private string dbPath;
 
@@ -167,6 +167,32 @@ namespace Core.Database {
 		public Transaction GetTransaction(byte[] signature) {
 			using (var db = new CoreDbContext()) {
 				Transaction? result = db.Transactions.Where(x => x.Signature == signature).FirstOrDefault();
+				if (result == null) throw new NotFoundException();
+				return result;
+			}
+		}
+
+		/// <summary>
+		/// Get all transactions from the ledger
+		/// </summary>
+		/// <returns>The transactions</returns>
+		/// <exception cref="NotFoundException">Thrown if not found</exception>
+		public IQueryable<Transaction> GetAllTransactions() {
+			using (var db = new CoreDbContext()) {
+				IQueryable<Transaction> result = db.Transactions;
+				if (result == null) throw new NotFoundException();
+				return result;
+			}
+		}
+
+		/// <summary>
+		/// Get all blocks from the ledger
+		/// </summary>
+		/// <returns>The blocks</returns>
+		/// <exception cref="NotFoundException">Thrown if not found</exception>
+		public IQueryable<Block> GetAllBlocks() {
+			using (var db = new CoreDbContext()) {
+				IQueryable<Block> result = db.Blocks;
 				if (result == null) throw new NotFoundException();
 				return result;
 			}
