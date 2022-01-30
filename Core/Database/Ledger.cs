@@ -173,6 +173,32 @@ namespace Core.Database {
 		}
 
 		/// <summary>
+		/// Get all transactions from the ledger
+		/// </summary>
+		/// <returns>The transactions</returns>
+		/// <exception cref="NotFoundException">Thrown if not found</exception>
+		public IQueryable<Transaction> GetAllTransactions() {
+			using (var db = new CoreDbContext()) {
+				IQueryable<Transaction> result = db.Transactions;
+				if (result == null) throw new NotFoundException();
+				return result;
+			}
+		}
+
+		/// <summary>
+		/// Get all blocks from the ledger
+		/// </summary>
+		/// <returns>The blocks</returns>
+		/// <exception cref="NotFoundException">Thrown if not found</exception>
+		public IQueryable<Block> GetAllBlocks() {
+			using (var db = new CoreDbContext()) {
+				IQueryable<Block> result = db.Blocks;
+				if (result == null) throw new NotFoundException();
+				return result;
+			}
+		}
+
+		/// <summary>
 		/// Get the next transaction from the ledger
 		/// </summary>
 		/// <param name="transaction">The transaction from which the next will be found</param>
