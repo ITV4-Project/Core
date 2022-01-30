@@ -7,7 +7,7 @@ using Core.Database.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Database {
-	public class Ledger {
+	public class Ledger : ILedger {
 
 		private string dbPath;
 
